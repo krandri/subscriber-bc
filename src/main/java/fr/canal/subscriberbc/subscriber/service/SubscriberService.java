@@ -30,7 +30,7 @@ public class SubscriberService {
         this.mapper = mapper;
     }
 
-    public SubscriberDTO create(SubscriberDTO subscriberDTO) throws ExistingSubscriberException {
+    public SubscriberDTO create(final SubscriberDTO subscriberDTO) throws ExistingSubscriberException {
         Optional<SubscriberEntity> entity = repository.findByMailAndPhone(subscriberDTO.getMail(), subscriberDTO.getPhone());
         if (entity.isPresent()) {
             throw new ExistingSubscriberException("Subscriber already exists");
@@ -40,36 +40,36 @@ public class SubscriberService {
         }
     }
 
-    public SubscriberDTO update(String id, SubscriberDTO subscriberDTO) throws SubscriberNotFoundException {
+    public SubscriberDTO update(final String id, final SubscriberDTO subscriberDTO) throws SubscriberNotFoundException {
         SubscriberEntity entityToUpdate = repository.findById(Integer.valueOf(id)).orElseThrow(() -> new SubscriberNotFoundException("Subscriber not found"));
         SubscriberDTO entityDTOToUpdate = mapper.entityToDto(entityToUpdate);
         BeanUtils.copyProperties(subscriberDTO, entityDTOToUpdate, getNullPropertyNames(subscriberDTO));
         return mapper.entityToDto(repository.save(mapper.dtoToEntity(entityDTOToUpdate)));
     }
 
-    public SubscriberDTO cancel(String id) throws SubscriberNotFoundException {
+    public SubscriberDTO cancel(final String id) throws SubscriberNotFoundException {
         SubscriberDTO toUpdate = mapper.entityToDto(repository.findById(Integer.valueOf(id)).orElseThrow(() -> new SubscriberNotFoundException("Subscriber not found")));
         toUpdate.setIsActiv(false);
         return mapper.entityToDto(repository.save(mapper.dtoToEntity(toUpdate)));
     }
 
-    private String[] getNullPropertyNames(Object source) {
+    public List<SubscriberDTO> searchSubscribers(final String search) {
+        List<SearchCriteria> criterias = parseCriteriasFromString(search);
+        return repository.findAll(SubscriberSpecification.byCriteria(criterias)).stream().map(mapper::entityToDto).toList();
+    }
+
+    private String[] getNullPropertyNames(final Object source) {
         final BeanWrapper beanWrapper = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = beanWrapper.getPropertyDescriptors();
+        PropertyDescriptor[] descriptors = beanWrapper.getPropertyDescriptors();
 
         Set<String> emptyNames = new HashSet<>();
-        Arrays.stream(pds).forEach(pd -> {
-            Object value = beanWrapper.getPropertyValue(pd.getName());
+        Arrays.stream(descriptors).forEach(descriptor -> {
+            Object value = beanWrapper.getPropertyValue(descriptor.getName());
             if (value == null) {
-                emptyNames.add(pd.getName());
+                emptyNames.add(descriptor.getName());
             }
         });
         return emptyNames.toArray(new String[0]);
-    }
-
-    public List<SubscriberDTO> searchSubscribers(String search) {
-        List<SearchCriteria> criterias = parseCriteriasFromString(search);
-        return repository.findAll(SubscriberSpecification.byCriteria(criterias)).stream().map(mapper::entityToDto).toList();
     }
 
     private List<SearchCriteria> parseCriteriasFromString(String search) {
@@ -78,7 +78,6 @@ public class SubscriberService {
 
         String[] criteriasArray = search.split(",");
         for (String criteria : criteriasArray) {
-            System.out.println(criteria);
             String operator = "";
             Matcher matcher = pattern.matcher(criteria);
             if (matcher.find()) {

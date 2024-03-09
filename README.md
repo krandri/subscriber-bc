@@ -13,6 +13,8 @@ Subscriber-bc
 
     Authentification
 
+    Utilisation de lombok pour éviter le boilerplate
+
 Pour lancer le projet :
 -
 

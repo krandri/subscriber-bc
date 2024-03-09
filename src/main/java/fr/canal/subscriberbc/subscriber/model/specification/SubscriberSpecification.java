@@ -23,12 +23,12 @@ public class SubscriberSpecification {
         return specification;
     }
 
-    private static boolean isStringAttribute(String criteria) {
+    private static boolean isStringAttribute(final String criteria) {
         List<String> attributes = List.of("fname", "lname", "mail", "phone");
         return attributes.contains(criteria);
     }
 
-    private static boolean isBooleanAttribute(String criteria) {
+    private static boolean isBooleanAttribute(final String criteria) {
         List<String> attributes = List.of("isActiv");
         return attributes.contains(criteria);
     }

@@ -47,7 +47,7 @@ public class SubscriberController {
     }
 
     @PutMapping("/{id}/cancel")
-    public ResponseEntity cancel(@PathVariable String id) throws SubscriberNotFoundException {
+    public ResponseEntity cancel(@PathVariable final String id) throws SubscriberNotFoundException {
         subscriberService.cancel(id);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -55,7 +55,7 @@ public class SubscriberController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+            final MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
