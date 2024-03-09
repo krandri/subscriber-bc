@@ -15,7 +15,10 @@ Subscriber-bc
 
 Pour lancer le projet :
 -
-Normalement il y a un script de création au démarrage de l'appl avec l'implémentation de Liquibase. Il faut modifier le
+
+Le projet se compile en Java 17.
+
+Il y a un script de création au démarrage de l'appli avec l'implémentation de Liquibase. Il faut modifier le
 script afin d'ajouter des données, ou bien créer directement des données au démarrage.
 
 L'application fonctionne en BasicAuth. Il y a un compte qui fonctionne, les deux autres non (pour test) :
@@ -76,5 +79,5 @@ Axes d'amélioration :
 - Changement de la sécurisation (Bearer token /JWT)
 - Mise en place de fonctions génériques pour les Controllers / Services
 - Revoir les Specifications pour la recherche (utilisation du Metamodel)
-- Tests sur une base de tests pour les tests du Controller
+- Tests d'intégration pour les tests du Controller
 - Ajouter des tests sur la validation lors de la création
